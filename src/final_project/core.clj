@@ -439,7 +439,21 @@
  (defn igual?
    "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
   [e1, e2]
-  ()
+  ( 
+    cond
+    (and (= e1 'NIL) (= e2 nil)) true
+    (and (= e2 'NIL) (= e1 nil)) true
+    (and (= e1 'NIL) (= e2 ())) true
+    (and (= e2 'NIL) (= e1 ())) true
+    (and (= e1 nil) (= e2 ())) true
+    (and (= e2 nil) (= e1 ())) true
+    (and (= e1 '(nil)) (= e2 ())) false
+    (and (= e2 '(nil)) (= e1 ())) false
+    (and (list? e1) (list? e2)) (every? true? (map (fn eq_components[components] (apply igual? components) )(apply map list (list e1 e2))))
+    (and (symbol? e1) (symbol? e2)) (= (clojure.string/lower-case e1) (clojure.string/lower-case e2))
+    :else (= e1 e2)
+
+  )
  )
 
 
