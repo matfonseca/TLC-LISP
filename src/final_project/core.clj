@@ -7,12 +7,12 @@
    ([x] (do (prn x) (prn) x))
    ([msg x] (do (print msg) (print ": ") (prn x) (prn) x))
  )
- 
+
  ; Funciones principales
  (declare repl)
  (declare evaluar)
  (declare aplicar)
- 
+
  ; Funciones secundarias de evaluar
  (declare evaluar-de)
  (declare evaluar-if)
@@ -25,11 +25,11 @@
  (declare evaluar-quote)
  (declare evaluar-lambda)
  (declare evaluar-escalar)
- 
+
  ; Funciones secundarias de aplicar
  (declare aplicar-lambda)
  (declare aplicar-funcion-primitiva)
- 
+
  ; Funciones primitivas
  (declare fnc-ge)
  (declare fnc-gt)
@@ -51,7 +51,7 @@
  (declare fnc-length)
  (declare fnc-terpri)
  (declare fnc-reverse)
- 
+
  ; Funciones auxiliares
  (declare buscar)
  (declare error?)
@@ -66,18 +66,18 @@
  (declare aplicar-lambda-multiple)
  (declare evaluar-clausulas-en-cond)
  (declare evaluar-secuencia-en-cond)
- 
+
  (defn -main
   "Ejemplo de Proyecto en Clojure"
   [& args]
   (repl))
- 
- 
+
+
  ; REPL (read–eval–print loop).
  ; Aridad 0: Muestra mensaje de bienvenida y se llama recursivamente con el ambiente inicial.
- ; Aridad 1: Muestra >>> y lee una expresion y la evalua. El resultado es una lista con un valor y un ambiente. 
+ ; Aridad 1: Muestra >>> y lee una expresion y la evalua. El resultado es una lista con un valor y un ambiente.
  ; Si la 2da. posicion del resultado es nil, devuelve true (caso base de la recursividad).
- ; Si no, imprime la 1ra. pos. del resultado y se llama recursivamente con la 2da. pos. del resultado. 
+ ; Si no, imprime la 1ra. pos. del resultado y se llama recursivamente con la 2da. pos. del resultado.
  (defn repl
    "Inicia el REPL de TLC-LISP."
    ([]
@@ -104,8 +104,8 @@
       (println) (print "*error* ")
       (println (get (Throwable->map e) :cause))
       (repl amb)))))
- 
- 
+
+
  (defn evaluar
    "Evalua una expresion 'expre' en los ambientes global y local. Devuelve un lista con un valor resultante y un ambiente."
    [expre amb-global amb-local]
@@ -115,10 +115,10 @@
        (list expre amb-global)                       ; de lo contrario, evaluarla
        (cond
          (not (seq? expre))             (evaluar-escalar expre amb-global amb-local)
- 
+
          (igual? (first expre) 'cond)   (evaluar-cond expre amb-global amb-local)
          (igual? (first expre) 'de)     (evaluar-de expre amb-global)
- 
+
           ;
           ;
           ;
@@ -127,18 +127,18 @@
           ;
           ;
           ;
- 
+
          :else (let [res-eval-1 (evaluar (first expre) amb-global amb-local),
                          res-eval-2 (reduce (fn [x y] (let [res-eval-3 (evaluar y (first x) amb-local)] (cons (second res-eval-3) (concat (next x) (list (first res-eval-3)))))) (cons (list (second res-eval-1)) (next expre)))]
                         (aplicar (first res-eval-1) (next res-eval-2) (first res-eval-2) amb-local)))))
- 
- 
+
+
  ; Evalua una macro COND. Siempre devuelve una lista con un resultado y un ambiente.
  (defn evaluar-cond [expre amb-global amb-local]
    "Evalua una forma 'cond' en TLC-LISP."
     (evaluar-clausulas-en-cond (next expre) amb-global amb-local))
- 
- 
+
+
  (defn evaluar-clausulas-en-cond [expre amb-global amb-local]
    "Une 'evaluar-cond' con 'evaluar-secuencia-en-cond'."
    (if (nil? expre)
@@ -148,10 +148,10 @@
               (error? (first res-eval)) res-eval
               (not (igual? (first res-eval) nil)) (evaluar-secuencia-en-cond (nfirst expre) (second res-eval) amb-local)
                :else (recur (next expre) (second res-eval) amb-local)))))
- 
- 
+
+
  ; Evalua (con evaluar) secuencialmente las sublistas de una lista y devuelve el valor de la ultima evaluacion.
- ; Si alguna evaluacion devuelve un error, sera la ultima que se evalue. 
+ ; Si alguna evaluacion devuelve un error, sera la ultima que se evalue.
  (defn evaluar-secuencia-en-cond [lis amb-global amb-local]
    (if (nil? (next lis))
        (evaluar (first lis) amb-global amb-local)
@@ -159,8 +159,8 @@
             (if (error? (first res-eval))
                  res-eval
                 (recur (next lis) (second res-eval) amb-local)))))
- 
- 
+
+
  (defn evaluar-eval
    "Evalua una forma 'eval' en TLC-LISP."
    [expre amb-global amb-local]
@@ -169,26 +169,26 @@
             (seq? ari) ari
           (and (seq? (second expre)) (igual? (first (second expre)) 'quote)) (evaluar (second (second expre)) amb-global amb-local)
           :else (evaluar (second expre) amb-global amb-local))))
- 
- 
+
+
  (defn evaluar-exit
    "Sale del interprete de TLC-LISP."
    [expre amb-global _]
    (cond
      (< (count (next expre)) 1) (list nil nil)
      :else (list (list '*error* 'too-many-args) amb-global)))
- 
- 
+
+
  (defn evaluar-lambda
    "Evalua una forma 'lambda' en TLC-LISP."
    [expre amb-global _]
    (cond
      (< (count (next expre)) 1) (list (list '*error* 'list 'expected nil) amb-global)
-     (and (not (igual? (second expre) nil)) (not (seq? (second expre)))) 
+     (and (not (igual? (second expre) nil)) (not (seq? (second expre))))
        (list (list '*error* 'list 'expected (second expre)) amb-global)
      :else (list expre amb-global)))
- 
- 
+
+
  (defn evaluar-load
    "Evalua una forma 'load' en TLC-LISP. Carga en el ambiente un archivo 'expre' con código en TLC-LISP."
    [expre amb-global amb-local]
@@ -196,13 +196,13 @@
      (< (count (next expre)) 1) (list (list '*error* 'too-few-args) amb-global)
          (> (count (next expre)) 1) (list (list '*error* 'not-implemented) amb-global)
         :else (list \space (cargar-arch amb-global amb-local (second expre)))))
- 
- 
+
+
  (defn cargar-arch
    ([amb-global amb-local arch]
      (let [nomb (first (evaluar arch amb-global amb-local))]
        (if (error? nomb)
-            (do (imprimir nomb) amb-global) 
+            (do (imprimir nomb) amb-global)
            (let [nm (clojure.string/lower-case (str nomb)),
                  nom (if (and (> (count nm) 4) (clojure.string/ends-with? nm ".lsp")) nm (str nm ".lsp")),
                  ret (try (with-open [in (java.io.PushbackReader. (clojure.java.io/reader nom))]
@@ -215,16 +215,16 @@
      (try (let [res (evaluar (read in) amb-global nil)] (cargar-arch (second res) nil in res))
      (catch Exception e (imprimir (first res)) amb-global)))
  )
- 
- 
+
+
  (defn evaluar-quote
    "Evalua una forma 'quote' de TLC-LISP."
    [expre amb-global _]
    (if (igual? (second expre) nil)
      (list nil amb-global)
      (list (second expre) amb-global)))
- 
- 
+
+
  (defn aplicar
    "Aplica a la lista de argumentos 'lae' la función 'fnc' en los ambientes dados."
    ([fnc lae amb-global amb-local]
@@ -235,8 +235,8 @@
       (error? resu2) (list resu2 amb-global)
       (not (seq? fnc)) (list (aplicar-funcion-primitiva fnc lae amb-global amb-local) amb-global)
       :else (aplicar-lambda fnc lae amb-global amb-local))))
- 
- 
+
+
  (defn aplicar-lambda
    "Aplica la forma lambda 'fnc' a la lista de argumentos 'lae'."
    [fnc lae amb-global amb-local]
@@ -245,14 +245,14 @@
      (> (count lae) (count (second fnc))) (list '(*error* too-many-args) amb-global)
      (nil? (next (nnext fnc))) (aplicar-lambda-simple fnc lae amb-global amb-local)
      :else (aplicar-lambda-multiple fnc lae amb-global amb-local)))
- 
- 
+
+
  (defn aplicar-lambda-simple
    "Evalua una forma lambda 'fnc' con un cuerpo simple."
    [fnc lae amb-global amb-local]
    (evaluar (first (nnext fnc)) amb-global (concat (reduce concat (map list (second fnc) lae)) amb-local)))
- 
- 
+
+
  (defn aplicar-lambda-multiple
    "Evalua una forma lambda 'fnc' cuyo cuerpo contiene varias expresiones."
    [fnc lae amb-global amb-local]
@@ -260,19 +260,19 @@
             lae
             (second (aplicar-lambda-simple fnc lae amb-global amb-local))  ; Nuevo ambiente global
             amb-local))
- 
- 
+
+
  (defn aplicar-funcion-primitiva
    "Aplica una funcion primitiva a una 'lae' (lista de argumentos evaluados)."
    [fnc lae amb-global amb-local]
    (cond
      (igual? fnc 'add)     (fnc-add lae)
- 
+
      ; Las funciones primitivas reciben argumentos y retornan un valor (son puras)
- 
+
      :else (list '*error* 'non-applicable-type fnc)))
- 
- 
+
+
  (defn fnc-cons
    "Devuelve la inserción de un elem en la cabeza de una lista."
    [lae]
@@ -281,8 +281,8 @@
           (seq? ari) ari
          (or (seq? (second lae)) (igual? (second lae) nil)) (cons (first lae) (second lae))
           :else (list '*error* 'not-implemented))))
- 
- 
+
+
  (defn fnc-first
    "Devuelve el primer elemento de una lista."
    [lae]
@@ -292,8 +292,8 @@
        (igual? (first lae) nil) nil
        (not (seq? (first lae))) (list '*error* 'list 'expected (first lae))
        :else (ffirst lae))))
- 
- 
+
+
  (defn fnc-length
    "Devuelve la longitud de una lista."
    [lae]
@@ -302,14 +302,14 @@
        (seq? ari) ari
        (or (seq? (first lae)) (igual? (first lae) nil)) (count (first lae))
        :else (list '*error* 'arg-wrong-type (first lae)))))
- 
- 
+
+
  (defn fnc-list
    "Devuelve una lista formada por los args."
    [lae]
    (if (< (count lae) 1) nil lae))
- 
- 
+
+
  (defn fnc-listp
    "Devuelve 't' si un elemento es una lista."
    [lae]
@@ -318,8 +318,8 @@
        (seq? ari) ari
        (seq? (first lae)) 't
        :else nil)))
- 
- 
+
+
  (defn fnc-not
    "Niega el argumento."
    [lae]
@@ -328,14 +328,14 @@
        (seq? ari) ari
           (igual? (first lae) nil) 't
             :else nil)))
- 
- 
+
+
  (defn fnc-null
    "Devuelve 't' si un elemento es 'nil' en TLC-Lisp."
    [lae]
    (fnc-not lae))
- 
- 
+
+
  (defn fnc-prin3
    "Imprime un elemento y lo devuelve."
    [lae]
@@ -344,8 +344,8 @@
          (> (count lae) 1) (list '*error* 'not-implemented)
          (not (seq? (first lae))) (do (print (first lae)) (flush) (first lae))
          :else (do (print (map #(if (igual? % nil) nil %) (first lae))) (flush) (first lae))))
- 
- 
+
+
  (defn fnc-rest
    "Devuelve una lista sin su 1ra. posición."
    [lae]
@@ -355,10 +355,10 @@
              (igual? (first lae) nil) nil
              (not (seq? (first lae))) (list '*error* 'list 'expected (first lae))
              :else (nfirst lae))))
- 
- 
+
+
  (defn imprimir
-    "Imprime, con un salto de linea al final, lo recibido devolviendo 
+    "Imprime, con un salto de linea al final, lo recibido devolviendo
      el mismo valor. Tambien muestra los errores."
     ([elem]
        (cond
@@ -371,10 +371,10 @@
        (if (nil? lis)
             (do (prn) (flush) orig)
              (do (pr (first lis)) (print " ") (imprimir (next lis) orig)))))
- 
- 
+
+
  ; FUNCIONES QUE DEBEN SER IMPLEMENTADAS PARA COMPLETAR EL INTERPRETE DE TLC-LISP (ADEMAS DE COMPLETAR 'EVALUAR' Y 'APLICAR-FUNCION-PRIMITIVA'):
- 
+
  ; user=> (controlar-aridad '(a b c) 3)
  ; 3
  ; user=> (controlar-aridad '(a b c) 2)
@@ -385,8 +385,8 @@
    "Si la longitud de una lista dada es la esperada, devuelve esa longitud.
     Si no, devuelve una lista con un mensaje de error (una lista con *error* como primer elemento)."
  )
- 
- 
+
+
  ; user=> (igual? 1 1)
  ; true
  ; user=> (igual? 1 2)
@@ -432,8 +432,8 @@
  (defn igual?
    "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
  )
- 
- 
+
+
  ; user=> (error? '(*error* too-few-args))
  ; true
  ; user=> (error? (list '*error* 'too-few-args))
@@ -455,8 +455,8 @@
  (defn error?
    "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
  )
- 
- 
+
+
  ; user=> (revisar-fnc '(*error* too-few-args))
  ; (*error* too-few-args)
  ; user=> (revisar-fnc '(too-few-args))
@@ -470,8 +470,8 @@
  (defn revisar-fnc
    "Si la lista es un mensaje de error, lo devuelve; si no, devuelve nil."
  )
- 
- 
+
+
  ; user=> (revisar-lae '(1 2 3))
  ; nil
  ; user=> (revisar-lae nil)
@@ -485,8 +485,8 @@
  (defn revisar-lae
    "Devuelve el primer elemento que es un mensaje de error. Si no hay ninguno, devuelve nil."
  )
- 
- 
+
+
  ; user=> (actualizar-amb '(a 1 b 2 c 3) 'd 4)
  ; (a 1 b 2 c 3 d 4)
  ; user=> (actualizar-amb '(a 1 b 2 c 3) 'b 4)
@@ -496,11 +496,11 @@
  ; user=> (actualizar-amb () 'b 7)
  ; (b 7)
  (defn actualizar-amb
-   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
+   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor.
    Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza el valor."
  )
- 
- 
+
+
  ; user=> (buscar 'c '(a 1 b 2 c 3 d 4 e 5))
  ; 3
  ; user=> (buscar 'f '(a 1 b 2 c 3 d 4 e 5))
@@ -509,7 +509,7 @@
    "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
     y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
  )
- 
+
  ; user=> (fnc-append '( (1 2) ))
  ; (*error* too-few-args)
  ; user=> (fnc-append '( (1 2) (3) (4 5) (6 7) ))
@@ -531,8 +531,8 @@
  (defn fnc-append
    "Devuelve el resultado de fusionar 2 sublistas."
  )
- 
- 
+
+
  ; user=> (fnc-env () '(a 1 b 2) '(c 3 d 4))
  ; (a 1 b 2 c 3 d 4)
  ; user=> (fnc-env '(5) '(a 1 b 2) '(c 3 d 4))
@@ -540,8 +540,8 @@
  (defn fnc-env
    "Devuelve la fusion de los ambientes global y local."
  )
- 
- 
+
+
  ; user=> (fnc-equal '(1 1))
  ; t
  ; user=> (fnc-equal '(A a))
@@ -565,8 +565,8 @@
  (defn fnc-equal
    "Compara 2 elementos. Si son iguales, devuelve t. Si no, nil."
  )
- 
- 
+
+
  ; user=> (fnc-read ())
  ; 1
  ; 1
@@ -596,10 +596,10 @@
  (defn fnc-read
    "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
  )
- 
- 
+
+
  ; user=> (fnc-terpri ())
- ; 
+ ;
  ; nil
  ; user=> (fnc-terpri '(1))
  ; (*error* not-implemented)
@@ -607,14 +607,14 @@
  ; (*error* not-implemented)
  (defn fnc-terpri
    "Imprime un salto de línea y devuelve nil."
- ) 
- 
- 
+ )
+
+
  ; user=> (fnc-add ())
  ; (*error* too-few-args)
  ; user=> (fnc-add '(3))
  ; (*error* too-few-args)
- ; user=> (fnc-add '(3 4)) 
+ ; user=> (fnc-add '(3 4))
  ; 7
  ; user=> (fnc-add '(3 4 5))
  ; 12
@@ -629,8 +629,8 @@
  (defn fnc-add
    "Suma los elementos de una lista. Minimo 2 elementos."
  )
- 
- 
+
+
  ; user=> (fnc-sub ())
  ; (*error* too-few-args)
  ; user=> (fnc-sub '(3))
@@ -650,8 +650,8 @@
  (defn fnc-sub
    "Resta los elementos de un lista. Minimo 1 elemento."
  )
- 
- 
+
+
  ; user=> (fnc-lt ())
  ; (*error* too-few-args)
  ; user=> (fnc-lt '(1))
@@ -671,8 +671,8 @@
  (defn fnc-lt
      "Devuelve t si el primer numero es menor que el segundo; si no, nil."
  )
- 
- 
+
+
  ; user=> (fnc-gt ())
  ; (*error* too-few-args)
  ; user=> (fnc-gt '(1))
@@ -692,8 +692,8 @@
  (defn fnc-gt
      "Devuelve t si el primer numero es mayor que el segundo; si no, nil."
  )
- 
- 
+
+
  ; user=> (fnc-ge ())
  ; (*error* too-few-args)
  ; user=> (fnc-ge '(1))
@@ -713,8 +713,8 @@
  (defn fnc-ge
      "Devuelve t si el primer numero es mayor o igual que el segundo; si no, nil."
  )
- 
- 
+
+
  ; user=> (fnc-reverse ())
  ; (*error* too-few-args)
  ; user=> (fnc-reverse '(1))
@@ -729,9 +729,9 @@
  ; (*error* too-many-args)
  (defn fnc-reverse
    "Devuelve una lista con sus elementos en orden inverso."
- )						
- 
- 
+ )
+
+
  ; user=> (evaluar-escalar 32 '(v 1 w 3 x 6) '(x 5 y 11 z "hola"))
  ; (32 (v 1 w 3 x 6))
  ; user=> (evaluar-escalar "chau" '(v 1 w 3 x 6) '(x 5 y 11 z "hola"))
@@ -749,8 +749,8 @@
  (defn evaluar-escalar
    "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
  )
- 
- 
+
+
  ; user=> (evaluar-de '(de f (x)) '(x 1))
  ; (f (x 1 f (lambda (x))))
  ; user=> (evaluar-de '(de f (x) 2) '(x 1))
@@ -780,8 +780,8 @@
  (defn evaluar-de
    "Evalua una forma 'de'. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
  )
- 
- 
+
+
  ; user=> (evaluar-if '(if t) '(nil nil t t v 1 w 3 x 6) '(x 5 y 11 z "hola"))
  ; (nil (nil nil t t v 1 w 3 x 6))
  ; user=> (evaluar-if '(if 7) '(nil nil t t v 1 w 3 x 6) '(x 5 y 11 z "hola"))
@@ -819,8 +819,8 @@
  (defn evaluar-if
    "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
  )
- 
- 
+
+
  ; user=> (evaluar-or '(or) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
  ; (nil (nil nil t t w 5 x 4))
  ; user=> (evaluar-or '(or nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
@@ -850,8 +850,8 @@
  (defn evaluar-or
    "Evalua una forma 'or'. Devuelve una lista con el resultado y un ambiente."
  )
- 
- 
+
+
  ; user=> (evaluar-setq '(setq) '(nil nil t t + add w 5 x 4) '(x 1 y nil z 3))
  ; ((*error* list expected nil) (nil nil t t + add w 5 x 4))
  ; user=> (evaluar-setq '(setq m) '(nil nil t t + add w 5 x 4) '(x 1 y nil z 3))
@@ -881,9 +881,9 @@
  (defn evaluar-setq
    "Evalua una forma 'setq'. Devuelve una lista con el resultado y un ambiente actualizado."
  )
- 
- 
+
+
  ; Al terminar de cargar el archivo en el REPL de Clojure (con load-file), se debe devolver true.
- 
- 
- 
+
+
+
