@@ -708,7 +708,14 @@
  ; user=> (fnc-add '(3 4 A 6))
  ; (*error* number-expected A)
  (defn fnc-add
-   "Suma los elementos de una lista. Minimo 2 elementos."[]
+   "Suma los elementos de una lista. Minimo 2 elementos."
+   [lista]
+  (cond 
+    (< (count lista) 2) (list '*error* 'too-few-args)
+    (every? true? (map number? lista)) (reduce + lista)
+    :else (list '*error* 'number-expected (search_not_number lista))
+    
+    )
  )
 
 

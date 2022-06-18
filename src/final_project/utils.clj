@@ -44,3 +44,11 @@
     (get_value key (rest(rest envs)))
     )
 )
+
+(defn not_number?[ele]
+  (not(number? ele))
+  )
+
+(defn search_not_number[lista]
+  (nth (filter not_number? lista) 0)
+  )
