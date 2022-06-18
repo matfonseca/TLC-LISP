@@ -36,3 +36,17 @@
   (is (= false (igual? 'a "A" )))
  )
  )
+
+ (deftest error?-test
+  (testing "Prueba de la funcion: error?"
+  (is (= true (error? '(*error* too-few-args))))
+  (is (= true (error? (list '*error* 'too-few-args))))
+  (is (= true (error? (list '*ERROR* 'too-few-args))))
+  (is (= true (error? (list '*Error* 'too-few-args))))
+  (is (= true (error? (list '*error*))))
+  (is (= false (error? (list 'too-few-args))))
+  (is (= false (error? '*error*)))
+  (is (= false (error? ())))
+  (is (= false (error? nil)))
+ )
+ )

@@ -477,7 +477,10 @@
  ; false
  (defn error?
    "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
-  [e]()
+  [error_list]
+  (
+    if (and (list? error_list) (not(empty? error_list))) (= "*error*" (clojure.string/lower-case (first error_list))) false
+  )
  )
 
 
