@@ -137,3 +137,16 @@
   (is (= '(*error* number-expected A) (fnc-add '(3 4 A 6))))
   )
 )
+
+(deftest fnc-sub-test
+  (testing "Prueba de la funcion: fnc-add"
+  (is (= '(*error* too-few-args) (fnc-add ())))
+  (is (= '(*error* too-few-args) (fnc-add '(3))))
+  (is (= 7 (fnc-add '(3 4))))
+  (is (= 12 (fnc-add '(3 4 5))))
+  (is (= 18 (fnc-add '(3 4 5 6))))
+  (is (= '(*error* number-expected A) (fnc-add '(A 4 5 6))))
+  (is (= '(*error* number-expected A) (fnc-add '(3 A 5 6))))
+  (is (= '(*error* number-expected A) (fnc-add '(3 4 A 6))))
+  )
+)

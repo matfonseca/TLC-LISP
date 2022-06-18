@@ -737,7 +737,13 @@
  ; (*error* number-expected A)
  (defn fnc-sub
    "Resta los elementos de un lista. Minimo 1 elemento."
-  []
+  [lista]
+  (cond 
+    (< (count lista) 1) (list '*error* 'too-few-args)
+    (every? true? (map number? lista)) (reduce - lista)
+    :else (list '*error* 'number-expected (search_not_number lista))
+    
+    )
  )
 
 
