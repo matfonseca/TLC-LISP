@@ -581,14 +581,14 @@
     (> (count sublists) 2) (list '*error* 'too-many-args)
     :else (
       cond
-      (and (list? (nth sublists 0)) (list? (nth sublists 1))) 
-        ( if (and (empty? (nth sublists 0)) (empty? (nth sublists 1))) 
+      (and (list? (nth sublists 0)) (list? (nth sublists 1)))
+        ( if (and (empty? (nth sublists 0)) (empty? (nth sublists 1)))
           nil
           (concat (nth sublists 0) (nth sublists 1)) )
-      (and (list? (nth sublists 0)) (nil? (nth sublists 1))) 
-        (nth sublists 0) 
-      (and (list? (nth sublists 1)) (nil? (nth sublists 0))) 
-        (nth sublists 1) 
+      (and (list? (nth sublists 0)) (nil? (nth sublists 1)))
+        (nth sublists 0)
+      (and (list? (nth sublists 1)) (nil? (nth sublists 0)))
+        (nth sublists 1)
       (symbol? (nth sublists 0))(list '*error* 'list 'expected (nth sublists 0))
       (symbol? (nth sublists 1))(list '*error* 'list 'expected (nth sublists 1))
       (number? (nth sublists 0))(list '*error* 'list 'expected (nth sublists 0))
@@ -597,7 +597,7 @@
         )
     )
 )
- 
+
 
 
  ; user=> (fnc-env () '(a 1 b 2) '(c 3 d 4))
@@ -608,12 +608,12 @@
    "Devuelve la fusion de los ambientes global y local."
   [result, global_env, local_env]
   (
-    if (not(empty? result)) 
+    if (not(empty? result))
     (list '*error* 'too-many-args)
     (fnc-append (list global_env local_env))
   )
  )
-
+;TODO: Que apsa si en el global env y en el local env hay una variable con el mismo nombre cual queda?
 
  ; user=> (fnc-equal '(1 1))
  ; t
