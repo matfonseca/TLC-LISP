@@ -150,3 +150,16 @@
   (is (= '(*error* number-expected A) (fnc-sub '(3 4 A 6))))
   )
 )
+
+(deftest fnc-lt-test
+  (testing "Prueba de la funcion: fnc-sub"
+  (is (= '(*error* too-few-args) (fnc-lt ())))
+  (is (= '(*error* too-few-args) (fnc-lt '(1))))
+  (is (= 't (fnc-lt '(1 2))))
+  (is (= nil (fnc-lt '(1 1))))
+  (is (= nil (fnc-lt '(2 1))))
+  (is (= '(*error* number-expected A) (fnc-lt '(A 1))))
+  (is (= '(*error* number-expected A) (fnc-lt '(1 A))))
+  (is (= '(*error* too-many-args) (fnc-lt '(1 2 3))))
+  )
+)
