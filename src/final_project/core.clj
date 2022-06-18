@@ -1,4 +1,4 @@
-(ns final-project.core
+(ns final_project.core
   (:gen-class))
 
 (require '[clojure.string :refer [blank? ends-with? lower-case]] '[clojure.java.io :refer [reader]])
@@ -384,6 +384,13 @@
  (defn controlar-aridad
    "Si la longitud de una lista dada es la esperada, devuelve esa longitud.
     Si no, devuelve una lista con un mensaje de error (una lista con *error* como primer elemento)."
+  [list a]
+  (
+    cond
+    (> (count list) a) '(*error* too-many-args)
+    (< (count list) a) '(*error* too-few-args)
+    :else a
+  )
  )
 
 
@@ -431,6 +438,8 @@
  ; false
  (defn igual?
    "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
+  [e1, e2]
+  ()
  )
 
 
@@ -454,6 +463,7 @@
  ; false
  (defn error?
    "Devuelve true o false, segun sea o no el arg. un mensaje de error (una lista con *error* como primer elemento)."
+  [e]()
  )
 
 
@@ -469,6 +479,7 @@
  ; nil
  (defn revisar-fnc
    "Si la lista es un mensaje de error, lo devuelve; si no, devuelve nil."
+  [list_error]
  )
 
 
@@ -484,6 +495,7 @@
  ; (*error* too-few-args)
  (defn revisar-lae
    "Devuelve el primer elemento que es un mensaje de error. Si no hay ninguno, devuelve nil."
+  [lista]
  )
 
 
@@ -498,6 +510,7 @@
  (defn actualizar-amb
    "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor.
    Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza el valor."
+  [anv_vars, new_var, value]
  )
 
 
@@ -508,6 +521,7 @@
  (defn buscar
    "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
     y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
+  [key, envs]
  )
 
  ; user=> (fnc-append '( (1 2) ))
@@ -530,6 +544,7 @@
  ; nil
  (defn fnc-append
    "Devuelve el resultado de fusionar 2 sublistas."
+  [sublists]
  )
 
 
@@ -539,6 +554,7 @@
  ; (*error* too-many-args)
  (defn fnc-env
    "Devuelve la fusion de los ambientes global y local."
+  [global_env, local_env]
  )
 
 
@@ -564,6 +580,7 @@
  ; (*error* too-many-args)
  (defn fnc-equal
    "Compara 2 elementos. Si son iguales, devuelve t. Si no, nil."
+  []
  )
 
 
@@ -595,6 +612,7 @@
  ; (*error* not-implemented)
  (defn fnc-read
    "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
+  []
  )
 
 
@@ -607,6 +625,7 @@
  ; (*error* not-implemented)
  (defn fnc-terpri
    "Imprime un salto de línea y devuelve nil."
+  []
  )
 
 
@@ -627,7 +646,7 @@
  ; user=> (fnc-add '(3 4 A 6))
  ; (*error* number-expected A)
  (defn fnc-add
-   "Suma los elementos de una lista. Minimo 2 elementos."
+   "Suma los elementos de una lista. Minimo 2 elementos."[]
  )
 
 
@@ -649,6 +668,7 @@
  ; (*error* number-expected A)
  (defn fnc-sub
    "Resta los elementos de un lista. Minimo 1 elemento."
+  []
  )
 
 
@@ -670,6 +690,7 @@
  ; (*error* too-many-args)
  (defn fnc-lt
      "Devuelve t si el primer numero es menor que el segundo; si no, nil."
+    []
  )
 
 
@@ -691,6 +712,7 @@
  ; (*error* too-many-args)
  (defn fnc-gt
      "Devuelve t si el primer numero es mayor que el segundo; si no, nil."
+    []
  )
 
 
@@ -712,6 +734,7 @@
  ; (*error* too-many-args)
  (defn fnc-ge
      "Devuelve t si el primer numero es mayor o igual que el segundo; si no, nil."
+    []
  )
 
 
@@ -729,6 +752,7 @@
  ; (*error* too-many-args)
  (defn fnc-reverse
    "Devuelve una lista con sus elementos en orden inverso."
+  []
  )
 
 
@@ -748,6 +772,7 @@
  ; ((*error* unbound-symbol n) (v 1 w 3 x 6))
  (defn evaluar-escalar
    "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
+  []
  )
 
 
@@ -779,6 +804,7 @@
  ; ((*error* cannot-set nil) (x 1))
  (defn evaluar-de
    "Evalua una forma 'de'. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
+  []
  )
 
 
@@ -818,6 +844,7 @@
  ; (8 (gt gt nil nil t t v 1 w 3 x 6 m 8))
  (defn evaluar-if
    "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
+  []
  )
 
 
@@ -849,6 +876,7 @@
  ; (nil (nil nil t t w 5 x 4))
  (defn evaluar-or
    "Evalua una forma 'or'. Devuelve una lista con el resultado y un ambiente."
+  []
  )
 
 
@@ -880,6 +908,7 @@
  ; (9 (nil nil t t + add w 5 x 7 y 8 z 9))
  (defn evaluar-setq
    "Evalua una forma 'setq'. Devuelve una lista con el resultado y un ambiente actualizado."
+  []
  )
 
 
