@@ -710,11 +710,11 @@
  (defn fnc-add
    "Suma los elementos de una lista. Minimo 2 elementos."
    [lista]
-  (cond 
+  (cond
     (< (count lista) 2) (list '*error* 'too-few-args)
     (every? true? (map number? lista)) (reduce + lista)
     :else (list '*error* 'number-expected (search_not_number lista))
-    
+
     )
  )
 
@@ -738,11 +738,12 @@
  (defn fnc-sub
    "Resta los elementos de un lista. Minimo 1 elemento."
   [lista]
-  (cond 
+  (cond
     (< (count lista) 1) (list '*error* 'too-few-args)
+    (= (count lista) 1) (* (nth lista 0) -1)
     (every? true? (map number? lista)) (reduce - lista)
     :else (list '*error* 'number-expected (search_not_number lista))
-    
+
     )
  )
 
