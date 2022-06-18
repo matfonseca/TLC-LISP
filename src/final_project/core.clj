@@ -849,7 +849,14 @@
  ; (*error* too-many-args)
  (defn fnc-reverse
    "Devuelve una lista con sus elementos en orden inverso."
-  []
+  [lista]
+  (
+    cond 
+    (empty? lista) (list '*error* 'too-few-args)
+    (not(list? (first lista))) (list '*error* 'list 'expected (first lista))
+    (< 1 (count lista)) (list '*error* 'too-many-args)
+    :else (reverse (first lista))
+  )
  )
 
 

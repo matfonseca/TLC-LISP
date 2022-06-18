@@ -189,3 +189,14 @@
   (is (= '(*error* too-many-args) (fnc-ge '(1 2 3))))
   )
 )
+
+(deftest fnc-reverse-test
+  (testing "Prueba de la funcion: fnc-ge"
+  (is (= '(*error* too-few-args) (fnc-reverse ())))
+  (is (= '(*error* list expected 1) (fnc-reverse '(1))))
+  (is (= '(*error* list expected A) (fnc-reverse '(A))))
+  (is (= '(1) (fnc-reverse '((1)) )))
+  (is (= '(3 2 1) (fnc-reverse '((1 2 3)) )))
+  (is (= '(*error* too-many-args) (fnc-reverse '((1 2 3)(4)) )))
+  )
+)
