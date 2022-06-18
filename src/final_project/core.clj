@@ -439,7 +439,7 @@
  (defn igual?
    "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
   [e1, e2]
-  ( 
+  (
     cond
     (and (= e1 'NIL) (= e2 nil)) true
     (and (= e2 'NIL) (= e1 nil)) true
@@ -514,6 +514,10 @@
  (defn revisar-lae
    "Devuelve el primer elemento que es un mensaje de error. Si no hay ninguno, devuelve nil."
   [lista]
+  (if (and (list? lista) (< 0 (count(filter revisar-fnc lista))))
+    (nth (filter revisar-fnc lista) 0)
+    nil
+  )
  )
 
 

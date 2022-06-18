@@ -61,3 +61,14 @@
   )
 
  )
+
+ (deftest revisar-lae-test
+  (testing "Prueba de la funcion: revisar-lae"
+  (is (= nil (revisar-lae '(1 2 3))))
+  (is (= nil (revisar-lae nil)))
+  (is (= nil (revisar-lae ())))
+  (is (= '(*error* too-few-args) (revisar-lae '(1 (*error* too-few-args) 3))))
+  (is (= '(*error* too-few-args) (revisar-lae '(1 (*error* too-few-args) (*error* too-many-args) 3))))
+  )
+
+ )
