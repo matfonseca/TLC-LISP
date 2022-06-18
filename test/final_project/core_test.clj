@@ -152,7 +152,7 @@
 )
 
 (deftest fnc-lt-test
-  (testing "Prueba de la funcion: fnc-sub"
+  (testing "Prueba de la funcion: fnc-lt"
   (is (= '(*error* too-few-args) (fnc-lt ())))
   (is (= '(*error* too-few-args) (fnc-lt '(1))))
   (is (= 't (fnc-lt '(1 2))))
@@ -165,7 +165,7 @@
 )
 
 (deftest fnc-gt-test
-  (testing "Prueba de la funcion: fnc-sub"
+  (testing "Prueba de la funcion: fnc-gt"
   (is (= '(*error* too-few-args) (fnc-gt ())))
   (is (= '(*error* too-few-args) (fnc-gt '(1))))
   (is (= 't (fnc-gt '(2 1))))
@@ -174,5 +174,18 @@
   (is (= '(*error* number-expected A) (fnc-gt '(A 1))))
   (is (= '(*error* number-expected A) (fnc-gt '(1 A))))
   (is (= '(*error* too-many-args) (fnc-gt '(1 2 3))))
+  )
+)
+
+(deftest fnc-ge-test
+  (testing "Prueba de la funcion: fnc-ge"
+  (is (= '(*error* too-few-args) (fnc-ge ())))
+  (is (= '(*error* too-few-args) (fnc-ge '(1))))
+  (is (= 't (fnc-ge '(2 1))))
+  (is (= 't (fnc-ge '(1 1))))
+  (is (= nil (fnc-ge '(1 2))))
+  (is (= '(*error* number-expected A) (fnc-ge '(A 1))))
+  (is (= '(*error* number-expected A) (fnc-ge '(1 A))))
+  (is (= '(*error* too-many-args) (fnc-ge '(1 2 3))))
   )
 )
