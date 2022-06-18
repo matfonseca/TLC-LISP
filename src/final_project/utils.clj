@@ -2,7 +2,8 @@
 
 
 (defn contain_value? [conjunto, elemento]
-      (= true (some true? (map (partial = elemento) conjunto)))
+    (map-indexed list conjunto)
+    (= true (some true? (map (partial = elemento) conjunto)))
 )
 
 (defn update_value_envs [conjunto, clave, valor]
@@ -14,3 +15,32 @@
     )
 
 
+    (defn inc_index[elemento]
+      (list (inc (nth elemento 0)) (nth elemento 1))
+      )
+
+    (defn filter_even_indexes [elemento]
+      (odd? (nth elemento 0))
+      )
+
+    (defn mi_nth [index, elemento]
+      (nth elemento index)
+      )
+
+    (defn contain_key? [clave, conjunto]
+      (contain_value? (map (partial mi_nth 1)
+      (filter filter_even_indexes
+       (map inc_index (
+                      map-indexed list conjunto))
+       )
+      ) clave
+      )
+    )
+
+(defn get_value [key, envs]
+    (
+    if (= (nth envs 0) key)
+    (nth envs 1)
+    (get_value key (rest(rest envs)))
+    )
+)

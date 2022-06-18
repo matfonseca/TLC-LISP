@@ -81,3 +81,10 @@
   (is (= '(b 7) (actualizar-amb () 'b 7)))
   )
  )
+
+ (deftest buscar-test
+  (testing "Prueba de la funcion: buscar"
+  (is (= 3 (buscar 'c '(a 1 b 2 c 3 d 4 e 5))))
+  (is (= '(*error* unbound-symbol f) (buscar 'f '(a 1 b 2 c 3 d 4 e 5))))
+  )
+ )

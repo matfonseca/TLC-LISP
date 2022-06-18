@@ -536,7 +536,7 @@
    "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor.
    Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza el valor."
   [anv_vars, new_var, value]
-  (if 
+  (if
     (error? value) anv_vars
     (update_value_envs anv_vars new_var value)
     )
@@ -551,6 +551,7 @@
    "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
     y devuelve el valor asociado. Devuelve un mensaje de error si no la encuentra."
   [key, envs]
+  (if (contain_key? key envs) (get_value key envs) (list '*error* 'unbound-symbol key))
  )
 
  ; user=> (fnc-append '( (1 2) ))
