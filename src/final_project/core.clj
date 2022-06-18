@@ -497,6 +497,7 @@
  (defn revisar-fnc
    "Si la lista es un mensaje de error, lo devuelve; si no, devuelve nil."
   [list_error]
+  (if (error? list_error) list_error nil)
  )
 
 

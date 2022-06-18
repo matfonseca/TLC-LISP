@@ -50,3 +50,14 @@
   (is (= false (error? nil)))
  )
  )
+
+ (deftest revisar-fnc-test
+  (testing "Prueba de la funcion: revisar-fnc"
+  (is (= '(*error* too-few-args) (revisar-fnc '(*error* too-few-args))))
+  (is (= nil (revisar-fnc '(too-few-args))))
+  (is (= nil (revisar-fnc '*error*)))
+  (is (= nil (revisar-fnc nil)))
+  (is (= nil (revisar-fnc ())))
+  )
+
+ )
