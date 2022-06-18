@@ -1,7 +1,10 @@
 (ns final_project.core
-  (:gen-class))
+  (:require [final_project.utils :refer :all])
+  (:gen-class)
+)
 
 (require '[clojure.string :refer [blank? ends-with? lower-case]] '[clojure.java.io :refer [reader]])
+
 
  (defn spy
    ([x] (do (prn x) (prn) x))
@@ -533,6 +536,10 @@
    "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor.
    Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza el valor."
   [anv_vars, new_var, value]
+  (if 
+    (error? value) anv_vars
+    (update_value_envs anv_vars new_var value)
+    )
  )
 
 
