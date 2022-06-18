@@ -140,6 +140,7 @@
 
 (deftest fnc-sub-test
   (testing "Prueba de la funcion: fnc-sub"
+    (is (= '(*error* too-few-args) (fnc-sub ())))
   (is (= -3 (fnc-sub '(3))))
   (is (= -1 (fnc-sub '(3 4))))
   (is (= -6 (fnc-sub '(3 4 5))))

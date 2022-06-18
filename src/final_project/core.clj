@@ -766,7 +766,14 @@
  ; (*error* too-many-args)
  (defn fnc-lt
      "Devuelve t si el primer numero es menor que el segundo; si no, nil."
-    []
+     [lista]
+  (cond
+    (< (count lista) 2) (list '*error* 'too-few-args)
+    (> (count lista) 2) (list '*error* 'too-many-args)
+    (every? true? (map number? lista)) (if (apply < lista) 't nil)
+    :else (list '*error* 'number-expected (search_not_number lista))
+
+    )
  )
 
 
