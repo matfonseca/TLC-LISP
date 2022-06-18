@@ -88,3 +88,24 @@
   (is (= '(*error* unbound-symbol f) (buscar 'f '(a 1 b 2 c 3 d 4 e 5))))
   )
  )
+
+ (deftest fnc-append-test
+  (testing "Prueba de la funcion: fnc-append"
+  (is (= '(*error* too-few-args) (fnc-append '( (1 2) ))))
+  (is (= '(*error* too-many-args) (fnc-append '( (1 2) (3) (4 5) (6 7) ))))
+  (is (= '(*error* list expected 3) (fnc-append '( (1 2) 3 ))))
+  (is (= '(*error* list expected A) (fnc-append '( (1 2) A ))))
+  (is (= '(1 2 3) (fnc-append '( (1 2) (3)))))
+  (is (= '(1 2 ) (fnc-append '( (1 2) nil ))))
+  (is (= '(1 2 ) (fnc-append '( () (1 2) ))))
+  (is (= nil (fnc-append '(nil nil))))
+  (is (= nil (fnc-append '(() ()))))
+  )
+)
+ 
+(deftest fnc-env-test
+  (testing "Prueba de la funcion: fnc-env"
+  (is (= '(a 1 b 2 c 3 d 4) (fnc-env () '(a 1 b 2) '(c 3 d 4))))
+  (is (= '(*error* too-many-args) (fnc-env '(5) '(a 1 b 2) '(c 3 d 4))))
+  )
+)
