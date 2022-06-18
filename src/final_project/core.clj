@@ -913,6 +913,3 @@
 
 
  ; Al terminar de cargar el archivo en el REPL de Clojure (con load-file), se debe devolver true.
-
-
-
