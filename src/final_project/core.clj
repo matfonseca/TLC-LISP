@@ -384,11 +384,11 @@
  (defn controlar-aridad
    "Si la longitud de una lista dada es la esperada, devuelve esa longitud.
     Si no, devuelve una lista con un mensaje de error (una lista con *error* como primer elemento)."
-  [list a]
+  [lista a]
   (
     cond
-    (> (count list) a) '(*error* too-many-args)
-    (< (count list) a) '(*error* too-few-args)
+    (> (count lista) a) (list '*error* 'too-many-args)
+    (< (count lista) a) (list '*error* 'too-few-args)
     :else a
   )
  )
