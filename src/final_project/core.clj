@@ -673,9 +673,15 @@
  ; (*error* not-implemented)
  ; user=> (fnc-terpri '(1 2))
  ; (*error* not-implemented)
+ ; CHEQUEAR!!!
  (defn fnc-terpri
    "Imprime un salto de línea y devuelve nil."
-  []
+  [lista]
+  (if (empty? lista) 
+    (do (print "\n"))
+    (list '*error* 'not-implemented)
+    )
+
  )
 
 

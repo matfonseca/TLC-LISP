@@ -211,3 +211,12 @@
   (is (= '((*error* unbound-symbol n) (v 1 w 3 x 6)) (evaluar-escalar 'n '(v 1 w 3 x 6) '(x 5 y 11 z "hola"))))
   )
 )
+
+
+(deftest fnc-terpri-test
+  (testing "Prueba de la funcion: evaluar-escalar"
+  (is (= nil (fnc-terpri ())))
+  (is (= '(*error* not-implemented) (fnc-terpri '(1))))
+  (is (= '(*error* not-implemented) (fnc-terpri '(1 2))))
+  )
+)
