@@ -121,7 +121,7 @@
 
          (igual? (first expre) 'cond)   (evaluar-cond expre amb-global amb-local)
          (igual? (first expre) 'de)     (evaluar-de expre amb-global)
-
+         (or (igual? (first expre) 'quote) (igual? (str expre)  "'"))  (evaluar-quote expre amb-global amb-local)
           ;
           ;
           ;
@@ -270,7 +270,26 @@
    [fnc lae amb-global amb-local]
    (cond
      (igual? fnc 'add)     (fnc-add lae)
-
+     (igual? fnc 'append)  (fnc-append lae)
+     (igual? fnc 'cons)  (fnc-cons lae)
+     (igual? fnc 'env)  (fnc-env lae amb-global amb-local )
+     (igual? fnc 'equal) (fnc-equal lae)
+     (igual? fnc 'first) (fnc-first lae)
+     (igual? fnc 'ge) (fnc-ge lae)
+     (igual? fnc 'gt) (fnc-gt lae)
+     (igual? fnc 'length) (fnc-length lae)
+     (igual? fnc 'list) (fnc-list lae)
+     (igual? fnc 'listp) (fnc-listp lae)
+     (igual? fnc 'lt) (fnc-lt lae)
+     (igual? fnc 'not) (fnc-not lae)
+     (igual? fnc 'null) (fnc-null lae)
+     (igual? fnc 'prin3) (fnc-prin3 lae) 
+     (igual? fnc 'read) (fnc-read lae)
+     (igual? fnc 'rest) (fnc-rest lae)
+     (igual? fnc 'reverse) (fnc-reverse lae)
+     (igual? fnc 'sub) (fnc-sub lae)
+     (igual? fnc 'terpri) (fnc-terpri lae)
+ 
      ; Las funciones primitivas reciben argumentos y retornan un valor (son puras)
 
      :else (list '*error* 'non-applicable-type fnc)))
@@ -594,9 +613,9 @@
  ; (*error* too-many-args)
  (defn fnc-env
    "Devuelve la fusion de los ambientes global y local."
-  [result, global_env, local_env]
+  [lae, global_env, local_env]
   (
-    if (not(empty? result))
+    if (not(empty? lae))
     (list '*error* 'too-many-args)
     (fnc-append (list global_env local_env))
   )
@@ -662,7 +681,11 @@
  ; (*error* not-implemented)
  (defn fnc-read
    "Devuelve la lectura de un elemento de TLC-LISP desde la terminal/consola."
-  []
+  [v]
+  (if (empty? v)
+  (parse_read_value (read))
+  (list '*error* 'not-implemented)
+  )
  )
 
 

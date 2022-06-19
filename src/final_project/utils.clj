@@ -78,3 +78,11 @@
      :else (list '*error* 'unbound-symbol escalar)
       )
   )
+
+
+(defn parse_read_value [value]
+  (cond
+    (= value '()) nil
+    :else value
+    )
+  )

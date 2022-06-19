@@ -122,6 +122,7 @@
   (is (= '(*error* too-few-args) (fnc-equal ())))
   (is (= '(*error* too-few-args) (fnc-equal '(A))))
   (is (= '(*error* too-many-args) (fnc-equal '(A a A))))
+  (is (= nil (fnc-equal '("H" "h"))))
   )
 )
 
@@ -216,7 +217,21 @@
 (deftest fnc-terpri-test
   (testing "Prueba de la funcion: evaluar-escalar"
   (is (= nil (fnc-terpri ())))
+  (is (= "\n" (with-out-str (fnc-terpri()))))
   (is (= '(*error* not-implemented) (fnc-terpri '(1))))
   (is (= '(*error* not-implemented) (fnc-terpri '(1 2))))
   )
+)
+
+
+(deftest fnc-read-test
+  (testing "Prueba de la funcion: evaluar-escalar"
+    (is (= 1 (with-in-str "1" (fnc-read '()))))
+    (is (= 'a (with-in-str "a" (fnc-read '()))))
+    (is (= '(hola mundo) (with-in-str "(hola mundo)" (fnc-read '()))))
+    (is (= nil (with-in-str "()" (fnc-read '()))))
+    (is (= nil (with-in-str "nil" (fnc-read '()))))
+    (is (= '(*error* not-implemented) (fnc-read '(1))))
+    (is (= '(*error* not-implemented) (fnc-read '(1 2))))
+    )
 )
