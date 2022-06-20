@@ -1,4 +1,5 @@
-(ns final_project.utils)
+(ns final_project.utils
+)
 
 (defn _igual? 
   [e1, e2]
@@ -86,3 +87,17 @@
     :else value
     )
   )
+
+(defn get_true_value_from_if [if_expre]
+  (
+   nth if_expre 2
+  )
+  )
+
+(defn get_false_value_from_if [if_expre, global_env, local_env]
+    (
+      if (< (count if_expre) 4) 
+      nil
+      (if (symbol?(last if_expre)) (get_value_from_env (last if_expre) local_env global_env) (last if_expre))
+    )
+)

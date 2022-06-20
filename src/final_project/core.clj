@@ -122,7 +122,7 @@
          (igual? (first expre) 'cond)   (evaluar-cond expre amb-global amb-local)
          (igual? (first expre) 'de)     (evaluar-de expre amb-global)
          (or (igual? (first expre) 'quote) (igual? (str expre)  "'"))  (evaluar-quote expre amb-global amb-local)
-          ;
+         (igual? (first expre) 'if) (evaluar-if expre amb-global amb-local)
           ;
           ;
           ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada aqui
@@ -969,9 +969,18 @@
  ; (8 (gt gt nil nil t t v 1 w 3 x 6 m 8))
  (defn evaluar-if
    "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
-  []
+  [expre, global_env, local_env]
+  (
+    cond
+    (< (count expre) 3) (list nil global_env)
+  
+    (symbol? (second expre))
+     (cond
+      (not (or (contain_key? (second expre) global_env) (contain_key? (second expre) local_env))) (list (get_value_from_env (second expre) local_env global_env) global_env)
+      :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre) global_env) (list (get_false_value_from_if expre global_env local_env) global_env)))
+    :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre) global_env) (list (get_false_value_from_if expre global_env local_env) global_env))
  )
-
+ )
 
  ; user=> (evaluar-or '(or) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
  ; (nil (nil nil t t w 5 x 4))
