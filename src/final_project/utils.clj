@@ -1,7 +1,7 @@
 (ns final_project.utils
 )
 
-(defn _igual? 
+(defn _igual?
   [e1, e2]
   (
     cond
@@ -28,7 +28,7 @@
 (defn update_value_envs [conjunto, clave, valor]
     (cond
         ( empty? conjunto) (list clave valor)
-        (= (nth conjunto 0) clave) (concat (list clave valor) (rest(rest conjunto)))
+        (_igual? (nth conjunto 0) clave) (concat (list clave valor) (rest(rest conjunto)))
         :else  (concat (list (nth conjunto 0) (nth conjunto 1)) (update_value_envs (rest (rest conjunto)) clave valor))
         )
     )
@@ -79,7 +79,7 @@
      :else (list '*error* 'unbound-symbol escalar)
       )
   )
-  
+
 (defn parse_read_value [value]
   (cond
     (= value '()) nil
@@ -95,7 +95,7 @@
 
 (defn get_false_value_from_if [if_expre, global_env, local_env]
     (
-      if (< (count if_expre) 4) 
+      if (< (count if_expre) 4)
       nil
       (if (symbol?(last if_expre)) (get_value_from_env (last if_expre) local_env global_env) (last if_expre))
     )
