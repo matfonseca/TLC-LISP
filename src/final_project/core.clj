@@ -878,7 +878,7 @@
   (
     cond
     (empty? lista) (list '*error* 'too-few-args)
-    (not(list? (first lista))) (list '*error* 'list 'expected (first lista))
+    (not(seq? (first lista))) (list '*error* 'list 'expected (first lista))
     (< 1 (count lista)) (list '*error* 'too-many-args)
     :else (reverse (first lista))
   )
@@ -989,11 +989,11 @@
   (
     if (< (count expre) 3)
       (list nil global_env)
-    (let [condition (second expre)]
+    (let [condition (second  expre)]
       (cond
         (seq? condition)
           (let [result (evaluar condition  global_env local_env )]
-            (_evaluar-if(concat (list (first expre) (first result)) (rest (rest expre))) (second result)  local_env)
+             (_evaluar-if(concat (list (first expre) (first result)) (rest (rest expre))) (second result)  local_env)
             )
         (symbol? condition)
           (let [value (get_value_from_env condition local_env global_env)]
@@ -1017,11 +1017,12 @@
               (not_nil? (second expre))
                   (get_true_value_from_if expre global_env local_env)
                   (get_false_value_from_if expre global_env local_env)
-              )]
+              ),
+      condition (not_nil? (second expre))
+              ]
     (cond
     (symbol? value) (list (get_value_from_env value local_env global_env) global_env)
-    (seq? value) (
-      if (or (empty? value) (not(symbol? (first value))) )
+    (seq? value) (if (or (empty? value) (not(symbol? (first value))) (and condition (symbol? (nth expre 2))) (and (not condition) (symbol? (last expre))))
       (list value global_env)
       (evaluar value global_env local_env )
       )
@@ -1030,6 +1031,7 @@
 
   )
  )
+
  ; user=> (evaluar-or '(or) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
  ; (nil (nil nil t t w 5 x 4))
  ; user=> (evaluar-or '(or nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
