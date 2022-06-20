@@ -74,8 +74,8 @@
 
 (defn get_value_from_env [escalar, local_env, global_env]
   (cond
-     (contain_key? escalar global_env) (get_value escalar global_env)
      (contain_key? escalar local_env) (get_value escalar local_env)
+     (contain_key? escalar global_env) (get_value escalar global_env)
      :else (list '*error* 'unbound-symbol escalar)
       )
   )

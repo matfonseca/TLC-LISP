@@ -901,10 +901,10 @@
  ; ((*error* unbound-symbol n) (v 1 w 3 x 6))
  (defn evaluar-escalar
    "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
-  [escalar, local_env, global_env]
+  [escalar, global_env, local_env]
   (if
-    (symbol? escalar)(list (get_value_from_env escalar local_env global_env) local_env)
-    (list escalar local_env)
+    (symbol? escalar)(list (get_value_from_env escalar local_env global_env) global_env)
+    (list escalar global_env)
     )
  )
 
@@ -987,13 +987,13 @@
    "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
   [expre, global_env, local_env]
   (
-    if (< (count expre) 3) 
+    if (< (count expre) 3)
       (list nil global_env)
     (let [condition (second expre)]
       (cond
-        (seq? condition) 
+        (seq? condition)
           (let [result (evaluar condition  global_env local_env )]
-            (_evaluar-if (concat (list (first expre) (first result)) (rest (rest expre))) (second result) local_env)
+            (_evaluar-if(concat (list (first expre) (first result)) (rest (rest expre))) (second result)  local_env)
             )
         (symbol? condition)
           (let [value (get_value_from_env condition local_env global_env)]
@@ -1002,7 +1002,7 @@
               (list value global_env)
               )
 
-              
+
             )
         :else(_evaluar-if expre global_env local_env)
         )
@@ -1013,20 +1013,21 @@
  (defn _evaluar-if
   "Evalua una forma 'if'. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
  [expre, global_env, local_env]
- (let [value (if 
-              (not_nil? (second expre)) 
-                  (get_true_value_from_if expre global_env local_env) 
+ (let [value (if
+              (not_nil? (second expre))
+                  (get_true_value_from_if expre global_env local_env)
                   (get_false_value_from_if expre global_env local_env)
-              )] 
+              )]
     (cond
     (symbol? value) (list (get_value_from_env value local_env global_env) global_env)
     (seq? value) (
-      if (or (empty? value) (not(symbol? (first value))) ) 
+      if (or (empty? value) (not(symbol? (first value))) )
       (list value global_env)
-      (evaluar value global_env local_env ))
+      (evaluar value global_env local_env )
+      )
     :else (list value global_env)
     )
-    
+
   )
  )
  ; user=> (evaluar-or '(or) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))
@@ -1071,9 +1072,9 @@
           )
       :else (list (second expre) global_env)
         )
-    ) 
+    )
 )
- 
+
 
 
  ; user=> (evaluar-setq '(setq) '(nil nil t t + add w 5 x 4) '(x 1 y nil z 3))
