@@ -283,13 +283,13 @@
      (igual? fnc 'lt) (fnc-lt lae)
      (igual? fnc 'not) (fnc-not lae)
      (igual? fnc 'null) (fnc-null lae)
-     (igual? fnc 'prin3) (fnc-prin3 lae) 
+     (igual? fnc 'prin3) (fnc-prin3 lae)
      (igual? fnc 'read) (fnc-read lae)
      (igual? fnc 'rest) (fnc-rest lae)
      (igual? fnc 'reverse) (fnc-reverse lae)
      (igual? fnc 'sub) (fnc-sub lae)
      (igual? fnc 'terpri) (fnc-terpri lae)
- 
+
      ; Las funciones primitivas reciben argumentos y retornan un valor (son puras)
 
      :else (list '*error* 'non-applicable-type fnc)))
@@ -462,7 +462,7 @@
    "Verifica la igualdad entre dos elementos al estilo de TLC-LISP (case-insensitive)."
   [e1, e2]
   (
-    _igual? e1 e2
+    _igual? e1 e2 ;ver en utils.clj
   )
  )
 
@@ -700,7 +700,7 @@
  (defn fnc-terpri
    "Imprime un salto de línea y devuelve nil."
   [lista]
-  (if (empty? lista) 
+  (if (empty? lista)
     (do (print "\n"))
     (list '*error* 'not-implemented)
     )
@@ -818,7 +818,7 @@
        (> (count lista) 2) (list '*error* 'too-many-args)
        (every? true? (map number? lista)) (if (apply > lista) 't nil)
        :else (list '*error* 'number-expected (search_not_number lista))
-   
+
        )
  )
 
@@ -847,7 +847,7 @@
        (> (count lista) 2) (list '*error* 'too-many-args)
        (every? true? (map number? lista)) (if (or (apply = lista) (apply > lista)) 't nil)
        :else (list '*error* 'number-expected (search_not_number lista))
-   
+
        )
  )
 
@@ -868,7 +868,7 @@
    "Devuelve una lista con sus elementos en orden inverso."
   [lista]
   (
-    cond 
+    cond
     (empty? lista) (list '*error* 'too-few-args)
     (not(list? (first lista))) (list '*error* 'list 'expected (first lista))
     (< 1 (count lista)) (list '*error* 'too-many-args)
@@ -894,9 +894,9 @@
  (defn evaluar-escalar
    "Evalua una expresion escalar consultando, si corresponde, los ambientes local y global. Devuelve una lista con el resultado y un ambiente."
   [escalar, local_env, global_env]
-  (cond
+  (if
     (symbol? escalar)(list (get_value_from_env escalar local_env global_env) local_env)
-    :else (list escalar local_env)
+    (list escalar local_env)
     )
  )
 
