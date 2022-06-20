@@ -973,12 +973,15 @@
   (
     cond
     (< (count expre) 3) (list nil global_env)
-  
+    (list? (second expre)) (if (first (evaluar (second expre)  global_env local_env ))
+      (list (get_true_value_from_if expre global_env local_env) global_env) 
+      (list (get_false_value_from_if expre global_env local_env) global_env)                                 
+      )
     (symbol? (second expre))
      (cond
       (not (or (contain_key? (second expre) global_env) (contain_key? (second expre) local_env))) (list (get_value_from_env (second expre) local_env global_env) global_env)
-      :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre) global_env) (list (get_false_value_from_if expre global_env local_env) global_env)))
-    :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre) global_env) (list (get_false_value_from_if expre global_env local_env) global_env))
+      :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre global_env local_env) global_env) (list (get_false_value_from_if expre global_env local_env) global_env)))
+    :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre global_env local_env) global_env) (list (get_false_value_from_if expre global_env local_env) global_env))
  )
  )
 

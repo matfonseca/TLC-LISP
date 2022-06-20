@@ -79,8 +79,7 @@
      :else (list '*error* 'unbound-symbol escalar)
       )
   )
-
-
+  
 (defn parse_read_value [value]
   (cond
     (= value '()) nil
@@ -88,9 +87,9 @@
     )
   )
 
-(defn get_true_value_from_if [if_expre]
+(defn get_true_value_from_if [if_expre, global_env, local_env]
   (
-   nth if_expre 2
+   if (symbol? (nth if_expre 2)) (get_value_from_env (nth if_expre 2) local_env global_env) (nth if_expre 2)
   )
   )
 
