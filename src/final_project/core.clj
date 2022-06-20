@@ -123,6 +123,7 @@
          (igual? (first expre) 'de)     (evaluar-de expre amb-global)
          (or (igual? (first expre) 'quote) (igual? (str expre)  "'"))  (evaluar-quote expre amb-global amb-local)
          (igual? (first expre) 'if) (evaluar-if expre amb-global amb-local)
+         (igual? (first expre) 'setq) (evaluar-setq expre amb-global amb-local)
           ;
           ;
           ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada aqui
@@ -973,15 +974,32 @@
   (
     cond
     (< (count expre) 3) (list nil global_env)
-    (list? (second expre)) (if (first (evaluar (second expre)  global_env local_env ))
-      (list (get_true_value_from_if expre global_env local_env) global_env) 
-      (list (get_false_value_from_if expre global_env local_env) global_env)                                 
-      )
+    (list? (second expre)) (evaluar-if (concat (list (first expre) (first (evaluar (second expre)  global_env local_env ))) (rest (rest expre))) (second (evaluar (second expre)  global_env local_env )) local_env)
     (symbol? (second expre))
      (cond
-      (not (or (contain_key? (second expre) global_env) (contain_key? (second expre) local_env))) (list (get_value_from_env (second expre) local_env global_env) global_env)
-      :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre global_env local_env) global_env) (list (get_false_value_from_if expre global_env local_env) global_env)))
-    :else (if (not (igual? (second expre) nil)) (list (get_true_value_from_if expre global_env local_env) global_env) (list (get_false_value_from_if expre global_env local_env) global_env))
+      (not (or (contain_key? (second expre) global_env) (contain_key? (second expre) local_env)))
+        (list (get_value_from_env (second expre) local_env global_env) global_env)
+      :else (if (not (igual? (second expre) nil))
+        (cond
+          (list? (get_true_value_from_if expre global_env local_env)) (evaluar (get_true_value_from_if expre global_env local_env)  global_env local_env )
+          :else (list (get_true_value_from_if expre global_env local_env) global_env)
+          )
+        (cond
+            (list?(get_false_value_from_if expre global_env local_env)) (evaluar (get_false_value_from_if expre global_env local_env)  global_env local_env )
+            :else (list (get_false_value_from_if expre global_env local_env) global_env)
+            )
+            )
+          )
+    :else (if (not (igual? (second expre) nil))
+    (cond
+      (list? (get_true_value_from_if expre global_env local_env)) (evaluar (get_true_value_from_if expre global_env local_env)  global_env local_env )
+      :else (list (get_true_value_from_if expre global_env local_env) global_env)
+      )
+    (cond
+        (list?(get_false_value_from_if expre global_env local_env)) (evaluar (get_false_value_from_if expre global_env local_env)  global_env local_env )
+        :else (list (get_false_value_from_if expre global_env local_env) global_env)
+        )
+      )
  )
  )
 
@@ -1045,7 +1063,13 @@
  ; (9 (nil nil t t + add w 5 x 7 y 8 z 9))
  (defn evaluar-setq
    "Evalua una forma 'setq'. Devuelve una lista con el resultado y un ambiente actualizado."
-  []
+  [expre, global_env, local_env]
+  (
+    cond
+    (< (count expre) 3) (list (list '*error* 'list 'expected nil) global_env)
+    (list? (last expre)) (evaluar-setq (list (first expre) (second expre) (first (evaluar (last expre)  global_env local_env ))) global_env local_env)
+    :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
+  )
  )
 
 
