@@ -127,6 +127,7 @@
          (igual? (first expre) 'setq) (evaluar-setq expre amb-global amb-local)
          (igual? (first expre) 'exit) (evaluar-exit expre amb-global amb-local)
          (igual? (first expre) 'eval) (evaluar-eval expre amb-global amb-local)
+         (igual? (first expre) 'or) (evaluar-or expre amb-global amb-local)
           ;
           ;
           ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada aqui
