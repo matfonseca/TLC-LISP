@@ -273,6 +273,7 @@
     (is (= '(14 (nil nil t t + add w 5 x 7 m 14)) (evaluar-setq '(setq x 7 m (+ x 7)) '(nil nil t t + add w 5 x 4) '(y nil z 3))))
     (is (= '((*error* list expected nil) (nil nil t t + add w 5 x 7)) (evaluar-setq '(setq x 7 y) '(nil nil t t + add w 5 x 4) '(y nil z 3))))
     (is (= '(9 (nil nil t t + add w 5 x 7 y 8 z 9)) (evaluar-setq '(setq x 7 y 8 z 9) '(nil nil t t + add w 5 x 4) '(y nil z 3))))
+    (is (= '(m (nil nil t t + add w 5 x 4 m m)) (evaluar-setq '(setq m 'm) '(nil nil t t + add w 5 x 4) '(x 1 y nil z 3))))
     )
 )
 

@@ -1115,7 +1115,12 @@
    (igual? (second expre) nil) (list (list '*error* 'cannot-set nil) global_env)
    (not (symbol? (second expre))) (list (list '*error* 'symbol 'expected (second expre)) global_env)
    (list? (last expre)) (evaluar-setq (list (first expre) (second expre) (first (evaluar (last expre)  global_env local_env ))) (second (evaluar (last expre)  global_env local_env )) local_env)
-   :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
+   :else 
+   (
+    cond
+    (seq? (last expre)) (list (first (evaluar (last expre)  global_env local_env )) (second (evaluar (last expre)  global_env local_env )) )
+    :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
+    )
  )
 )
  ; Al terminar de cargar el archivo en el REPL de Clojure (con load-file), se debe devolver true.
