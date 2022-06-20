@@ -1118,7 +1118,7 @@
    :else
    (
     cond
-    (seq? (last expre)) (list (first (evaluar (last expre)  global_env local_env )) (second (evaluar (last expre)  global_env local_env )) )
+    (seq? (last expre)) (let [value (first (evaluar (last expre)  global_env local_env ))](list  value (actualizar-amb global_env (second expre) value) ))
     (symbol? (last expre)) (list (get_value_from_env (last expre) local_env global_env) (actualizar-amb global_env (second expre) (last expre)))
     :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
     )
