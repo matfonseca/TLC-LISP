@@ -231,6 +231,7 @@
     (is (= '(hola mundo) (with-in-str "(hola mundo)" (fnc-read '()))))
     (is (= nil (with-in-str "()" (fnc-read '()))))
     (is (= nil (with-in-str "nil" (fnc-read '()))))
+    (is (= "hola" (with-in-str " \"hola\" " (fnc-read '()))))
     (is (= '(*error* not-implemented) (fnc-read '(1))))
     (is (= '(*error* not-implemented) (fnc-read '(1 2))))
     )
