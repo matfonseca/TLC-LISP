@@ -112,5 +112,5 @@
 
 
 (defn not_nil?[element]
-  (not (nil? element))
+  (not (_igual? element nil))
   )

@@ -1048,18 +1048,20 @@
    [expre, global_env, local_env]
   (let [expre (filter not_nil? expre)]  (
       cond
-      (or (< (count expre) 2) (= (second expre) nil) ) (list nil global_env)
-      (= (count expre) 2) (
-        cond
-        (symbol? (second expre)) (list (get_value_from_env (second expre) local_env global_env) global_env)
-        (list? (second expre)) (evaluar (second expre)  global_env local_env)
-        :else (list (second expre) global_env)
+      (< (count expre) 2)  (list nil global_env)
+      (symbol? (second expre)) (list (get_value_from_env (second expre) local_env global_env) global_env)
+      (seq? (second expre))(
+          let [result (evaluar (second expre)  global_env local_env)](
+            cond
+            (not_nil? (first result)) result
+            :else (evaluar-or (concat (list (first expre)) (rest (rest expre))) (second result) local_env)
+            )
+          )
+      :else (list (second expre) global_env)
         )
-      :else (evaluar-or (list (first expre) (second expre)) global_env local_env)
-    )
-    )
-
- )
+    ) 
+)
+ 
 
 
  ; user=> (evaluar-setq '(setq) '(nil nil t t + add w 5 x 4) '(x 1 y nil z 3))
@@ -1114,7 +1116,10 @@
    cond
    (igual? (second expre) nil) (list (list '*error* 'cannot-set nil) global_env)
    (not (symbol? (second expre))) (list (list '*error* 'symbol 'expected (second expre)) global_env)
-   (list? (last expre)) (let [result (evaluar (last expre)  global_env local_env )](evaluar-setq (list (first expre) (second expre) (first result)) (second result) local_env))
+   (list? (last expre)) (let [result (evaluar (last expre)  global_env local_env )]
+    (if(igual? (last expre) (first result))
+      (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
+      (evaluar-setq (list (first expre) (second expre) (first result)) (second result) local_env)))
    :else
    (
     cond
