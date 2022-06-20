@@ -25,6 +25,7 @@
  (declare evaluar-exit)
  (declare evaluar-load)
  (declare evaluar-setq)
+ (declare _evaluar-setq)
  (declare evaluar-quote)
  (declare evaluar-lambda)
  (declare evaluar-escalar)
@@ -1067,10 +1068,28 @@
   (
     cond
     (< (count expre) 3) (list (list '*error* 'list 'expected nil) global_env)
-    (list? (last expre)) (evaluar-setq (list (first expre) (second expre) (first (evaluar (last expre)  global_env local_env ))) global_env local_env)
-    :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
+    (= (count expre) 3) (_evaluar-setq expre, global_env, local_env)
+    :else (let [result (_evaluar-setq (get_first_par_args expre), global_env, local_env)]
+              (last 
+                (concat 
+                  (list result)
+                  (list (evaluar-setq (remove_first_par_args expre) (second result) local_env))
+                ) 
+              )
+          )
+    )
+    
   )
+
+ (defn _evaluar-setq
+  "Evalua una forma 'setq'. Devuelve una lista con el resultado y un ambiente actualizado."
+ [expre, global_env, local_env]
+ (
+   cond
+   (igual? (second expre) nil) (list (list '*error* 'cannot-set nil) global_env)
+   (not (symbol? (second expre))) (list (list '*error* 'symbol 'expected (second expre)) global_env)
+   (list? (last expre)) (evaluar-setq (list (first expre) (second expre) (first (evaluar (last expre)  global_env local_env ))) (second (evaluar (last expre)  global_env local_env )) local_env)
+   :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
  )
-
-
+)
  ; Al terminar de cargar el archivo en el REPL de Clojure (con load-file), se debe devolver true.

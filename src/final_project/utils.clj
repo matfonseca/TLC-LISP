@@ -100,3 +100,12 @@
       (if (symbol?(last if_expre)) (get_value_from_env (last if_expre) local_env global_env) (last if_expre))
     )
 )
+
+(defn get_first_par_args [expre]
+  (list (first expre) (second expre) (nth expre 2))
+  )
+
+
+(defn remove_first_par_args [expre]
+    (concat (list (first expre)) (rest( rest(rest expre))))
+    )
