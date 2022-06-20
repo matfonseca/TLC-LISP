@@ -109,3 +109,8 @@
 (defn remove_first_par_args [expre]
     (concat (list (first expre)) (rest( rest(rest expre))))
     )
+
+
+(defn not_nil?[element]
+  (not (nil? element))
+  )

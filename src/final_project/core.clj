@@ -125,6 +125,8 @@
          (or (igual? (first expre) 'quote) (igual? (str expre)  "'"))  (evaluar-quote expre amb-global amb-local)
          (igual? (first expre) 'if) (evaluar-if expre amb-global amb-local)
          (igual? (first expre) 'setq) (evaluar-setq expre amb-global amb-local)
+         (igual? (first expre) 'exit) (evaluar-exit expre amb-global amb-local)
+         (igual? (first expre) 'eval) (evaluar-eval expre amb-global amb-local)
           ;
           ;
           ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada aqui
@@ -1032,7 +1034,20 @@
  ; (nil (nil nil t t w 5 x 4))
  (defn evaluar-or
    "Evalua una forma 'or'. Devuelve una lista con el resultado y un ambiente."
-  []
+   [expre, global_env, local_env]
+  (let [expre (filter not_nil? expre)]  (
+      cond
+      (or (< (count expre) 2) (= (second expre) nil) ) (list nil global_env)
+      (= (count expre) 2) (
+        cond 
+        (symbol? (second expre)) (list (get_value_from_env (second expre) local_env global_env) global_env)
+        (list? (second expre)) (evaluar (second expre)  global_env local_env)
+        :else (list (second expre) global_env)
+        )
+      :else (evaluar-or (list (first expre) (second expre)) global_env local_env)
+    )
+    )
+
  )
 
 
