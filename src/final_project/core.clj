@@ -128,6 +128,7 @@
          (igual? (first expre) 'exit) (evaluar-exit expre amb-global amb-local)
          (igual? (first expre) 'eval) (evaluar-eval expre amb-global amb-local)
          (igual? (first expre) 'or) (evaluar-or expre amb-global amb-local)
+         (igual? (first expre) 'lambda) (evaluar-lambda expre amb-global amb-local)
           ;
           ;
           ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada aqui
@@ -934,7 +935,15 @@
  ; ((*error* cannot-set nil) (x 1))
  (defn evaluar-de
    "Evalua una forma 'de'. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
-  []
+  [expre, global_env]
+  (
+    cond 
+    (< (count expre) 3) (list (list '*error* 'list 'expected nil) global_env)
+    (not (list? (nth expre 2)))(list (list '*error* 'list 'expected (nth expre 2)) global_env)
+    (igual? nil (second expre)) (list '(*error* cannot-set nil) global_env)
+    (not (symbol? (second expre))) (list (list '*error* 'symbol 'expected (second expre)) global_env)
+    :else (list (second  expre) (actualizar-amb global_env (second expre) (concat '(lambda) (rest (rest expre)))) )
+  )
  )
 
 

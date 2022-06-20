@@ -276,7 +276,7 @@
     )
 )
 
-(deftest evaluar-setq-test
+(deftest evaluar-or-test
   (testing "Prueba de la funcion: evaluar-or"
     (is (= '(nil (nil nil t t w 5 x 4)) (evaluar-or '(or) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))))
     (is (= '(nil (nil nil t t w 5 x 4)) (evaluar-or '(or nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))))
@@ -291,5 +291,23 @@
     (is (= '(6 (nil nil t t w 5 x 4)) (evaluar-or '(or nil 6 r nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))))
     (is (= '(t (nil nil t t w 5 x 4)) (evaluar-or '(or nil t r nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))))
     (is (= '(nil (nil nil t t w 5 x 4)) (evaluar-or '(or nil nil nil nil) '(nil nil t t w 5 x 4) '(x 1 y nil z 3))))
+  )
+)
+
+(deftest evaluar-de-test
+  (testing "Prueba de la funcion: evaluar-de"
+    (is (= '(f (x 1 f (lambda (x)))) (evaluar-de '(de f (x)) '(x 1))))
+    (is (= '(f (x 1 f (lambda (x) 2))) (evaluar-de '(de f (x) 2) '(x 1))))
+    (is (= '(f (x 1 f (lambda (x) (+ x 1)))) (evaluar-de '(de f (x) (+ x 1)) '(x 1))))
+    (is (= '(f (x 1 f (lambda (x y) (+ x y)))) (evaluar-de '(de f (x y) (+ x y)) '(x 1))))
+    (is (= '(f (x 1 f (lambda (x y) (prin3 x) (terpri) y))) (evaluar-de '(de f (x y) (prin3 x) (terpri) y) '(x 1))))
+    (is (= '((*error* list expected nil) (x 1)) (evaluar-de '(de) '(x 1))))
+    (is (= '((*error* list expected nil) (x 1)) (evaluar-de '(de f) '(x 1))))
+    (is (= '((*error* list expected 2) (x 1)) (evaluar-de '(de f 2) '(x 1))))
+    (is (= '((*error* list expected 2) (x 1)) (evaluar-de '(de f 2 3) '(x 1))))
+    (is (= '((*error* list expected nil) (x 1)) (evaluar-de '(de (f)) '(x 1))))
+    (is (= '((*error* list expected x) (x 1)) (evaluar-de '(de 2 x) '(x 1))))
+    (is (= '((*error* symbol expected 2) (x 1)) (evaluar-de '(de 2 (x)) '(x 1))))
+    (is (= '((*error* cannot-set nil) (x 1)) (evaluar-de '(de nil (x) 2) '(x 1))))
   )
 )
