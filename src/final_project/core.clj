@@ -1020,7 +1020,10 @@
               )] 
     (cond
     (symbol? value) (list (get_value_from_env value local_env global_env) global_env)
-    (seq? value) (evaluar value global_env local_env )
+    (seq? value) (
+      if (or (empty? value) (not(symbol? (first value))) ) 
+      (list value global_env)
+      (evaluar value global_env local_env ))
     :else (list value global_env)
     )
     
