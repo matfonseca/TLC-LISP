@@ -129,6 +129,7 @@
          (igual? (first expre) 'eval) (evaluar-eval expre amb-global amb-local)
          (igual? (first expre) 'or) (evaluar-or expre amb-global amb-local)
          (igual? (first expre) 'lambda) (evaluar-lambda expre amb-global amb-local)
+         (igual? (first expre) 'load) (evaluar-load expre amb-global amb-local)
           ;
           ;
           ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada aqui
@@ -937,7 +938,7 @@
    "Evalua una forma 'de'. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
   [expre, global_env]
   (
-    cond 
+    cond
     (< (count expre) 3) (list (list '*error* 'list 'expected nil) global_env)
     (not (list? (nth expre 2)))(list (list '*error* 'list 'expected (nth expre 2)) global_env)
     (igual? nil (second expre)) (list '(*error* cannot-set nil) global_env)
@@ -1049,7 +1050,7 @@
       cond
       (or (< (count expre) 2) (= (second expre) nil) ) (list nil global_env)
       (= (count expre) 2) (
-        cond 
+        cond
         (symbol? (second expre)) (list (get_value_from_env (second expre) local_env global_env) global_env)
         (list? (second expre)) (evaluar (second expre)  global_env local_env)
         :else (list (second expre) global_env)
@@ -1095,15 +1096,15 @@
     (< (count expre) 3) (list (list '*error* 'list 'expected nil) global_env)
     (= (count expre) 3) (_evaluar-setq expre, global_env, local_env)
     :else (let [result (_evaluar-setq (get_first_par_args expre), global_env, local_env)]
-              (last 
-                (concat 
+              (last
+                (concat
                   (list result)
                   (list (evaluar-setq (remove_first_par_args expre) (second result) local_env))
-                ) 
+                )
               )
           )
     )
-    
+
   )
 
  (defn _evaluar-setq
