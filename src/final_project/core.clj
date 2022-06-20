@@ -1114,12 +1114,12 @@
    cond
    (igual? (second expre) nil) (list (list '*error* 'cannot-set nil) global_env)
    (not (symbol? (second expre))) (list (list '*error* 'symbol 'expected (second expre)) global_env)
-   (list? (last expre)) (evaluar-setq (list (first expre) (second expre) (first (evaluar (last expre)  global_env local_env ))) (second (evaluar (last expre)  global_env local_env )) local_env)
+   (list? (last expre)) (let [result (evaluar (last expre)  global_env local_env )](evaluar-setq (list (first expre) (second expre) (first result)) (second result) local_env))
    :else
    (
     cond
     (seq? (last expre)) (let [value (first (evaluar (last expre)  global_env local_env ))](list  value (actualizar-amb global_env (second expre) value) ))
-    (symbol? (last expre)) (list (get_value_from_env (last expre) local_env global_env) (actualizar-amb global_env (second expre) (last expre)))
+    (symbol? (last expre)) (let [value (get_value_from_env (last expre) local_env global_env)](list value (actualizar-amb global_env (second expre) value)))
     :else (list (last expre) (actualizar-amb global_env (second expre) (last expre)))
     )
  )
